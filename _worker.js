@@ -6521,32 +6521,213 @@ async function 解析地址端口(proxyIP, 目标域名 = 'dash.cloudflare.com',
 	return 解析结果;
 }
 
-//////////////////////////////////////////////////////HTML伪装页面///////////////////////////////////////////////
+//////////////////////////////////////////////////////HTML前端页面，不加/admin是这个界面///////////////////////////////////////////////
 async function nginx() {
 	return `
-	<!DOCTYPE html>
-	<html>
+	<!doctype html>
+	<html lang="zh-CN">
 	<head>
-	<title>Welcome to nginx!</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#192d32">
+	<meta name="description" content="Phenex 的个人空间，收藏美好的画面与日常。">
+	<title>Phenex · 把日子过成喜欢的样子</title>
 	<style>
-		body {
-			width: 35em;
-			margin: 0 auto;
-			font-family: Tahoma, Verdana, Arial, sans-serif;
-		}
+	:root { color-scheme: light; --ink: #23343a; --muted: #627579; --rose: #e5a9a8; --mint: #b9d6c8; }
+	* { box-sizing: border-box; }
+	html { scroll-behavior: smooth; }
+	body { margin: 0; min-width: 320px; background: #f5f7f3; color: var(--ink); font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+	a { color: inherit; }
+	button { font: inherit; }
+	button:focus-visible, a:focus-visible { outline: 2px solid #f3c7bb; outline-offset: 4px; }
+	.hero { position: relative; height: 87svh; min-height: 540px; overflow: hidden; isolation: isolate; background: linear-gradient(140deg, #607d82 0%, #627772 44%, #a9bbb1 100%); color: #fff; }
+	.hero-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 45%; opacity: 0; transition: opacity .9s ease; z-index: -2; }
+	.hero-image.ready { opacity: 1; }
+	.hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(16, 35, 43, .78) 0%, rgba(21, 39, 45, .55) 34%, rgba(21, 39, 45, .08) 73%), linear-gradient(0deg, rgba(14, 32, 38, .62) 0%, transparent 34%, rgba(14, 32, 38, .27) 100%); }
+	.hero-shell { position: relative; display: flex; flex-direction: column; height: 100%; max-width: 1600px; margin: auto; padding: 34px clamp(24px, 5.2vw, 92px) 28px; }
+	.topbar, .hero-bottom, .topbar nav, .hero-actions, .hero-meta { display: flex; align-items: center; }
+	.topbar { justify-content: space-between; gap: 24px; }
+	.brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; font-family: Georgia, serif; font-size: 23px; font-weight: 700; }
+	.brand-mark { display: grid; place-items: center; width: 31px; height: 31px; border: 1px solid rgba(255,255,255,.75); border-radius: 50%; font: italic 20px Georgia, serif; color: #fff; }
+	.topbar nav { gap: 31px; font-size: 13px; font-weight: 600; }
+	.topbar nav a { text-decoration: none; opacity: .84; transition: opacity .2s; }
+	.topbar nav a:hover { opacity: 1; }
+	.hero-copy { margin: auto 0 8vh; max-width: 650px; }
+	.eyebrow { margin: 0 0 24px; color: #d7e4db; font-size: 11px; font-weight: 700; letter-spacing: .23em; }
+	.hero h1 { margin: 0; font: italic 700 118px/.95 Georgia, "Times New Roman", serif; text-shadow: 0 7px 35px rgba(13, 30, 35, .16); }
+	.hero-lead { margin: 28px 0 12px; font-size: 30px; font-weight: 600; line-height: 1.45; }
+	.hero-sub { max-width: 470px; margin: 0; color: #e5ede8; font-size: 14px; line-height: 1.9; }
+	.poem-credit { margin-left: 10px; color: #d7e4db; font-size: 11px; white-space: nowrap; }
+	.hero-actions { gap: 13px; margin-top: 29px; flex-wrap: wrap; }
+	.action { display: inline-flex; align-items: center; justify-content: center; min-height: 45px; padding: 0 21px; border: 1px solid rgba(255,255,255,.55); border-radius: 4px; background: rgba(255,255,255,.1); color: #fff; text-decoration: none; font-size: 13px; font-weight: 600; backdrop-filter: blur(10px); cursor: pointer; transition: background .2s, transform .2s; }
+	.action:hover { background: rgba(255,255,255,.22); transform: translateY(-2px); }
+	.action.primary { min-width: 112px; gap: 7px; border-color: rgba(255,248,240,.9); background: rgba(250,244,237,.96); box-shadow: 0 12px 28px rgba(8, 24, 30, .24), inset 0 1px 0 rgba(255,255,255,.82); color: #283b3d; white-space: nowrap; }
+	.action.primary span { display: inline-block; font-size: 15px; line-height: 1; transform: translateY(-1px); }
+	.action.primary:hover { background: #fff; box-shadow: 0 15px 32px rgba(8, 24, 30, .29), inset 0 1px 0 #fff; }
+	.action.icon { width: 45px; padding: 0; font-size: 23px; line-height: 1; }
+	.action:disabled { opacity: .55; cursor: wait; transform: none; }
+	.hero-bottom { justify-content: space-between; align-items: flex-end; gap: 20px; font-size: 11px; color: #dfe9e3; }
+	.hero-bottom a { text-underline-offset: 3px; }
+	.hero-meta { gap: 17px; white-space: nowrap; }
+	.hero-meta span + span { border-left: 1px solid rgba(255,255,255,.42); padding-left: 17px; }
+	.scroll-cue { text-decoration: none; white-space: nowrap; letter-spacing: .12em; }
+	.content { background: #f5f7f3; }
+	.intro { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr); gap: clamp(40px, 9vw, 150px); max-width: 1320px; margin: auto; padding: 98px clamp(24px, 5.2vw, 92px) 100px; }
+	.section-label { margin: 0 0 22px; color: #8b6f75; font-size: 11px; font-weight: 700; letter-spacing: .18em; }
+	.intro h2 { max-width: 660px; margin: 0 0 25px; font-size: 39px; font-weight: 600; line-height: 1.45; }
+	.intro p:not(.section-label) { max-width: 590px; margin: 0; color: var(--muted); font-size: 15px; line-height: 2; }
+	.side-notes { padding-top: 7px; border-top: 1px solid #cad8d1; }
+	.note { display: flex; justify-content: space-between; gap: 18px; padding: 21px 0; border-bottom: 1px solid #d9e2dc; font-size: 13px; }
+	.note span { color: #839296; }
+	.note strong { font-weight: 600; text-align: right; }
+	.project-band { background: #e6eeea; }
+	.project-inner { display: flex; justify-content: space-between; align-items: center; gap: 30px; max-width: 1320px; margin: auto; padding: 44px clamp(24px, 5.2vw, 92px); }
+	.project-inner .section-label { margin-bottom: 10px; }
+	.project-inner h2 { margin: 0 0 8px; font: 600 25px Georgia, serif; }
+	.project-inner p:last-child { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+	.project-inner a { flex: none; border-bottom: 1px solid #5a7271; padding: 8px 0; font-size: 13px; font-weight: 600; text-decoration: none; }
+	footer { display: flex; justify-content: space-between; gap: 20px; max-width: 1320px; margin: auto; padding: 30px clamp(24px, 5.2vw, 92px); color: #859394; font-size: 11px; }
+	footer a { text-underline-offset: 3px; }
+	@media (max-width: 720px) {
+		.hero { height: 88svh; min-height: 0; }
+		.hero-image { object-position: 58% center; }
+		.hero::before { background: linear-gradient(0deg, rgba(16,35,43,.84) 0%, rgba(16,35,43,.46) 44%, rgba(16,35,43,.2) 100%); }
+		.hero-shell { padding: 23px 22px 22px; }
+		.brand { font-size: 20px; }
+		.topbar nav { gap: 16px; font-size: 12px; }
+		.hero-copy { margin: auto 0 54px; }
+		.eyebrow { margin-bottom: 17px; font-size: 10px; }
+		.hero h1 { font-size: 72px; }
+		.hero-lead { margin-top: 21px; font-size: 22px; }
+		.hero-sub { font-size: 13px; line-height: 1.75; }
+		.hero-actions { margin-top: 24px; }
+		.hero-bottom { align-items: flex-end; }
+		.hero-meta { display: block; line-height: 1.75; white-space: normal; }
+		.hero-meta span { display: block; }
+		.hero-meta span + span { border: 0; padding: 0; }
+		.scroll-cue { display: none; }
+		.intro { display: block; padding: 70px 24px; }
+		.intro h2 { font-size: 30px; }
+		.side-notes { margin-top: 45px; }
+		.project-inner { align-items: flex-start; flex-direction: column; gap: 15px; padding: 38px 24px; }
+		footer { flex-direction: column; gap: 8px; padding: 26px 24px; }
+	}
+	@media (max-width: 360px) { .hero h1 { font-size: 62px; } }
+	@media (max-height: 600px) { .hero-copy { margin-bottom: 26px; } .hero-lead { margin-top: 14px; } .hero-actions { margin-top: 16px; } }
+	@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .hero-image, .action { transition: none; } }
 	</style>
 	</head>
 	<body>
-	<h1>Welcome to nginx!</h1>
-	<p>If you see this page, the nginx web server is successfully installed and
-	working. Further configuration is required.</p>
-
-	<p>For online documentation and support please refer to
-	<a href="http://nginx.org/">nginx.org</a>.<br/>
-	Commercial support is available at
-	<a href="http://nginx.com/">nginx.com</a>.</p>
-
-	<p><em>Thank you for using nginx.</em></p>
+	<section class="hero" id="top" aria-label="Phenex 个人主页">
+		<img class="hero-image" id="hero-image" alt="" aria-hidden="true" decoding="async">
+		<div class="hero-shell">
+			<header class="topbar">
+				<a class="brand" href="#top" aria-label="Phenex，返回顶部"><span class="brand-mark" aria-hidden="true">P</span>Phenex</a>
+				<nav aria-label="主导航"><a href="#about">关于</a><a href="#project">项目</a></nav>
+			</header>
+			<div class="hero-copy">
+				<p class="eyebrow">A LITTLE WORLD OF WONDERS</p>
+				<h1>Phenex.</h1>
+				<p class="hero-lead">把日子过成喜欢的样子。</p>
+				<p class="hero-sub"><span id="daily-poem" aria-live="polite">且听今日风月，慢慢道来。</span><small class="poem-credit">——每日一诗</small></p>
+				<div class="hero-actions">
+					<a class="action primary" href="#about">开始旅程 <span aria-hidden="true">↗</span></a>
+					<button class="action icon" id="next-wallpaper" type="button" title="更换壁纸、诗词与一言" aria-label="更换壁纸、诗词与一言">↻</button>
+				</div>
+			</div>
+			<div class="hero-bottom">
+				<div class="hero-meta"><span id="local-time">本地时间 · --:--</span><span>图片来自 <a href="https://t.alcy.cc/" target="_blank" rel="noopener noreferrer">栗次元 API</a></span></div>
+				<a class="scroll-cue" href="#about">SCROLL TO EXPLORE ↓</a>
+			</div>
+		</div>
+	</section>
+	<main class="content">
+		<section class="intro" id="about">
+			<div><p class="section-label">01 / ABOUT ME</p><h2>早上好，中午好，以及晚上好。<br>Hello World</h2><p id="daily-quote" aria-live="polite">愿每一天，都有一句值得收藏的话。</p></div>
+			<div class="side-notes"><div class="note"><span>此刻</span><strong>慢慢生活，认真喜欢</strong></div><div class="note"><span>偏爱</span><strong>ACGN · MUSIC · EVERYDAY</strong></div><div class="note"><span>坐标</span><strong>互联网的某个晴天</strong></div></div>
+		</section>
+		<section class="project-band" id="project"><div class="project-inner"><div><p class="section-label">02 / PROJECT</p><h2>测试的个人主页</h2><p>这个站点白嫖于 Cloudflare</p></div><a href="https://github.com/pXIIII" target="_blank" rel="noopener noreferrer">我的GitHub（虽然什么也没有） ↗</a></div></section>
+	</main>
+	<footer><span>© <span id="year">2026</span> Phenex. Power by G老师.</span><span>壁纸由第三方接口提供，作品版权归原作者。</span></footer>
+	<script>
+	(function () {
+		var heroImage = document.getElementById('hero-image');
+		var nextButton = document.getElementById('next-wallpaper');
+		var requestNumber = 0;
+		var lastRequest = 0;
+		function loadWallpaper(refresh) {
+			var now = Date.now();
+			if (refresh && now - lastRequest < 10000) return false;
+			lastRequest = now;
+			var current = ++requestNumber;
+			var candidate = new Image();
+			var finished = false;
+			var timeout = setTimeout(function () { finish(false); }, 12000);
+			nextButton.disabled = true;
+			function finish(ok) {
+				if (finished || current !== requestNumber) return;
+				finished = true;
+				clearTimeout(timeout);
+				if (ok) { heroImage.src = candidate.src; heroImage.classList.add('ready'); }
+				else lastRequest = 0;
+				nextButton.disabled = false;
+				nextButton.title = ok ? '更换壁纸、诗词与一言' : '图片暂时不可用，点击重试';
+			}
+			candidate.onload = function () { finish(true); };
+			candidate.onerror = function () { finish(false); };
+			candidate.src = 'https://t.alcy.cc/ycy?w=1600' + (refresh ? '&v=' + now : '');
+			return true;
+		}
+		function updateClock() {
+			var now = new Date();
+			var date = new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' }).format(now);
+			var time = new Intl.DateTimeFormat('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false }).format(now);
+			document.getElementById('local-time').textContent = date + ' · ' + time;
+			document.getElementById('year').textContent = now.getFullYear();
+		}
+		function loadDailyText(id, key, url, readText, refresh) {
+			var target = document.getElementById(id);
+			var now = new Date();
+			var day = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0'), String(now.getDate()).padStart(2, '0')].join('-');
+			if (!refresh) {
+				try {
+					var cached = JSON.parse(localStorage.getItem(key) || 'null');
+					if (cached && cached.day === day && typeof cached.text === 'string') {
+						target.textContent = cached.text;
+						return;
+					}
+				} catch (error) { }
+			}
+			var controller = new AbortController();
+			var timeout = setTimeout(function () { controller.abort(); }, 8000);
+			fetch(url, { signal: controller.signal }).then(function (response) {
+				if (!response.ok) throw new Error('Daily text unavailable');
+				return response.json();
+			}).then(function (data) {
+				var text = readText(data);
+				if (typeof text !== 'string' || !text.trim() || text.length > 180) return;
+				target.textContent = text;
+				try { localStorage.setItem(key, JSON.stringify({ day: day, text: text })); } catch (error) { }
+			}).catch(function () { }).finally(function () { clearTimeout(timeout); });
+		}
+		function loadDailyContent(refresh) {
+			loadDailyText('daily-quote', 'phenex-daily-quote', 'https://v1.hitokoto.cn/?encode=json&max_length=60', function (data) {
+				if (!data.hitokoto) return '';
+				return '“' + data.hitokoto.trim() + '”' + (data.from ? ' —— ' + data.from : '');
+			}, refresh);
+			loadDailyText('daily-poem', 'phenex-daily-poem', 'https://v2.jinrishici.com/one.json', function (data) {
+				if (data.status !== 'success' || !data.data || !data.data.content) return '';
+				var origin = data.data.origin;
+				return '“' + data.data.content.trim() + '”' + (origin && origin.author ? ' —— ' + origin.author : '');
+			}, refresh);
+		}
+		nextButton.addEventListener('click', function () { if (loadWallpaper(true)) loadDailyContent(true); });
+		updateClock();
+		setInterval(updateClock, 30000);
+		loadWallpaper(false);
+		loadDailyContent(false);
+	})();
+	</script>
 	</body>
 	</html>
 	`
